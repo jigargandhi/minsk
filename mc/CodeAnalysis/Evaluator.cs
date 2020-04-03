@@ -50,6 +50,20 @@ namespace Minsk.CodeAnalysis
 
             }
 
+            if (root is UnaryExpressionSyntax us)
+            {
+                var operand = EvaluateExpression(us.Operand);
+                switch (us.OperatorToken.Kind)
+                {
+                    case SyntaxKind.MinusToken:
+                        return -operand;
+                    case SyntaxKind.PlusToken:
+                        return operand;
+                    default:
+                        throw new Exception($"Unexpected unary operator {us.Kind}");
+                }
+            }
+
             if (root is ParenthesizedExpressionSyntax parenthesized)
             {
                 return EvaluateExpression(parenthesized.Expression);
