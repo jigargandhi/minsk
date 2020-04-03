@@ -5,9 +5,9 @@ using Minsk.CodeAnalysis;
 
 namespace Minsk
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             bool showTree = false;
             while (true)
@@ -56,13 +56,15 @@ namespace Minsk
             }
         }
 
-        static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = false)
+        static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
         {
+            var marker = isLast? "└───": "├───";
             // │
             // ─
             // ├
             // └──
             Console.Write(indent);
+            Console.Write(marker);
             Console.Write(node.Kind);
             if (node is SyntaxToken t && t.Value != null)
             {
@@ -71,9 +73,8 @@ namespace Minsk
 
             }
             Console.WriteLine();
-            indent = indent.Replace("─", " ").Replace("├", "│");
 
-            indent += isLast ? "└───" : "├───";
+            indent += isLast ? "    " : "│   ";
             var last = node.GetChildren().LastOrDefault();
 
             foreach (var child in node.GetChildren())

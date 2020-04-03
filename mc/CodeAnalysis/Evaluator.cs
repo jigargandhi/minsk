@@ -18,9 +18,9 @@ namespace Minsk.CodeAnalysis
 
         private int EvaluateExpression(ExpressionSyntax root)
         {
-            if (root is NumberExpressionSyntax numberToken)
+            if (root is LiteralExpressionSyntax numberToken)
             {
-                return (int)numberToken.NumberToken.Value;
+                return (int)numberToken.LiteralToken.Value;
             }
 
             if (root is BinaryExpressionSyntax bt)
