@@ -118,7 +118,7 @@ namespace Minsk.CodeAnalysis
                 var right = MatchToken(SyntaxKind.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
-            var numberToken = MatchToken(SyntaxKind.NumberToken);
+            var numberToken = MatchToken(SyntaxKind.LiteralToken);
             return new LiteralExpressionSyntax(numberToken);
         }
     }

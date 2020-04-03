@@ -2,7 +2,7 @@ namespace Minsk.CodeAnalysis
 {
     public enum SyntaxKind
     {
-        NumberToken,
+        LiteralToken,
         WhitespaceToken,
         PlusToken,
         MinusToken,
@@ -15,7 +15,7 @@ namespace Minsk.CodeAnalysis
 
         // Expression
         BinaryExpression,
-        NumberExpression,
+        LiteralExpression,
         ParenthesizedExpression
     }
 }
