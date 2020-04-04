@@ -1,13 +1,14 @@
 ﻿using System;
+using Minsk.CodeAnalysis.Binding;
 using Minsk.CodeAnalysis.Syntax;
 
 namespace Minsk.CodeAnalysis
 {
     class Evaluator
     {
-        private readonly ExpressionSyntax _root;
+        private readonly BoundExpression _root;
 
-        public Evaluator(ExpressionSyntax root)
+        public Evaluator(BoundExpression root)
         {
             this._root = root;
         }
@@ -17,58 +18,58 @@ namespace Minsk.CodeAnalysis
             return EvaluateExpression(_root);
         }
 
-        private int EvaluateExpression(ExpressionSyntax root)
+        private int EvaluateExpression(BoundExpression root)
         {
-            if (root is LiteralExpressionSyntax numberToken)
+            if (root is BoundLiteralExpression numberToken)
             {
-                return (int)numberToken.LiteralToken.Value;
+                return (int)numberToken.Value;
             }
 
-            if (root is BinaryExpressionSyntax bt)
+            if (root is BoundBinaryExpression bt)
             {
                 var left = EvaluateExpression(bt.Left);
                 var right = EvaluateExpression(bt.Right);
-                if (bt.OperatorToken.Kind == SyntaxKind.PlusToken)
+                if (bt.OperatorKind == BoundBinaryOperatorKind.Addition)
                 {
                     return left + right;
                 }
-                else if (bt.OperatorToken.Kind == SyntaxKind.MinusToken)
+                else if (bt.OperatorKind == BoundBinaryOperatorKind.Subtraction)
                 {
                     return left - right;
                 }
-                else if (bt.OperatorToken.Kind == SyntaxKind.MultiplyToken)
+                else if (bt.OperatorKind == BoundBinaryOperatorKind.Multiplication)
                 {
                     return left * right;
                 }
-                else if (bt.OperatorToken.Kind == SyntaxKind.DivideToken)
+                else if (bt.OperatorKind == BoundBinaryOperatorKind.Division)
                 {
                     return left / right;
                 }
                 else
                 {
-                    throw new Exception($"Expected a binary operator {bt.OperatorToken.Kind}");
+                    throw new Exception($"Expected a binary operator {bt.OperatorKind}");
                 }
 
             }
 
-            if (root is UnaryExpressionSyntax us)
+            if (root is BoundUnaryExpression us)
             {
                 var operand = EvaluateExpression(us.Operand);
-                switch (us.OperatorToken.Kind)
+                switch (us.OperatorKind)
                 {
-                    case SyntaxKind.MinusToken:
+                    case BoundUnaryOperatorKind.Negation:
                         return -operand;
-                    case SyntaxKind.PlusToken:
+                    case BoundUnaryOperatorKind.Identity:
                         return operand;
                     default:
                         throw new Exception($"Unexpected unary operator {us.Kind}");
                 }
             }
 
-            if (root is ParenthesizedExpressionSyntax parenthesized)
-            {
-                return EvaluateExpression(parenthesized.Expression);
-            }
+            // if (root is ParenthesizedExpressionSyntax parenthesized)
+            // {
+            //     return EvaluateExpression(parenthesized.Expression);
+            // }
             throw new Exception($"unexpected node {root.Kind}");
 
         }
