@@ -17,6 +17,9 @@ namespace Minsk.CodeAnalysis.Syntax
         BinaryExpression,
         LiteralExpression,
         ParenthesizedExpression,
-        UnaryExpression
+        UnaryExpression,
+        TrueKeyword,
+        FalseKeyword,
+        Identifier
     }
 }

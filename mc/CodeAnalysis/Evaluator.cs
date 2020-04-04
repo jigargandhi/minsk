@@ -13,22 +13,22 @@ namespace Minsk.CodeAnalysis
             this._root = root;
         }
 
-        public int Evaluate()
+        public object Evaluate()
         {
             return EvaluateExpression(_root);
         }
 
         private int EvaluateExpression(BoundExpression root)
         {
-            if (root is BoundLiteralExpression numberToken)
+            if (root is BoundLiteralExpression boundLiteralExpression)
             {
-                return (int)numberToken.Value;
+                return (int)boundLiteralExpression.Value;
             }
 
             if (root is BoundBinaryExpression bt)
             {
-                var left = EvaluateExpression(bt.Left);
-                var right = EvaluateExpression(bt.Right);
+                var left = (int) EvaluateExpression(bt.Left);
+                var right = (int) EvaluateExpression(bt.Right);
                 if (bt.OperatorKind == BoundBinaryOperatorKind.Addition)
                 {
                     return left + right;
@@ -54,7 +54,7 @@ namespace Minsk.CodeAnalysis
 
             if (root is BoundUnaryExpression us)
             {
-                var operand = EvaluateExpression(us.Operand);
+                var operand = (int)EvaluateExpression(us.Operand);
                 switch (us.OperatorKind)
                 {
                     case BoundUnaryOperatorKind.Negation:
