@@ -23,6 +23,8 @@ namespace Minsk.CodeAnalysis.Syntax
         Identifier,
         BangToken,
         AmpersandAmpersandToken,
-        PipePipeToken
+        PipePipeToken,
+        EqualsEqualsToken,
+        BangEqualsToken
     }
 }
