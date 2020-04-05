@@ -118,8 +118,8 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.FalseKeyword:
                     {
                         var keywordToken = NextToken();
-                        var value = Current.Kind == SyntaxKind.TrueKeyword;
-                        return new LiteralExpressionSyntax(Current, value);
+                        var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
+                        return new LiteralExpressionSyntax(keywordToken, value);
                     }
                 default:
                     {

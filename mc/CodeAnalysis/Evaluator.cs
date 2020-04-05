@@ -18,49 +18,48 @@ namespace Minsk.CodeAnalysis
             return EvaluateExpression(_root);
         }
 
-        private int EvaluateExpression(BoundExpression root)
+        private object EvaluateExpression(BoundExpression root)
         {
             if (root is BoundLiteralExpression boundLiteralExpression)
             {
-                return (int)boundLiteralExpression.Value;
+                return boundLiteralExpression.Value;
             }
 
             if (root is BoundBinaryExpression bt)
             {
-                var left = (int) EvaluateExpression(bt.Left);
-                var right = (int) EvaluateExpression(bt.Right);
-                if (bt.OperatorKind == BoundBinaryOperatorKind.Addition)
+                var left = EvaluateExpression(bt.Left);
+                var right = EvaluateExpression(bt.Right);
+                switch (bt.OperatorKind)
                 {
-                    return left + right;
-                }
-                else if (bt.OperatorKind == BoundBinaryOperatorKind.Subtraction)
-                {
-                    return left - right;
-                }
-                else if (bt.OperatorKind == BoundBinaryOperatorKind.Multiplication)
-                {
-                    return left * right;
-                }
-                else if (bt.OperatorKind == BoundBinaryOperatorKind.Division)
-                {
-                    return left / right;
-                }
-                else
-                {
-                    throw new Exception($"Expected a binary operator {bt.OperatorKind}");
+                    case BoundBinaryOperatorKind.Addition:
+                        return (int)left + (int)right;
+                    case BoundBinaryOperatorKind.Subtraction:
+                        return (int)left - (int)right;
+                    case BoundBinaryOperatorKind.Multiplication:
+                        return (int)left * (int)right;
+                    case BoundBinaryOperatorKind.Division:
+                        return (int)left / (int)right;
+                    case BoundBinaryOperatorKind.LogicalAnd:
+                        return (bool)left && (bool)right;
+                    case BoundBinaryOperatorKind.LogicalOr:
+                        return (bool)left || (bool)right;
+                    default:
+                        throw new Exception($"Expected a binary operator {bt.OperatorKind}");
                 }
 
             }
 
             if (root is BoundUnaryExpression us)
             {
-                var operand = (int)EvaluateExpression(us.Operand);
+                var operand = EvaluateExpression(us.Operand);
                 switch (us.OperatorKind)
                 {
                     case BoundUnaryOperatorKind.Negation:
-                        return -operand;
+                        return -(int)operand;
                     case BoundUnaryOperatorKind.Identity:
-                        return operand;
+                        return (int)operand;
+                    case BoundUnaryOperatorKind.LogicalNegation:
+                        return !(bool)operand;
                     default:
                         throw new Exception($"Unexpected unary operator {us.Kind}");
                 }

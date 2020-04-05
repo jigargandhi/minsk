@@ -20,6 +20,9 @@ namespace Minsk.CodeAnalysis.Syntax
         UnaryExpression,
         TrueKeyword,
         FalseKeyword,
-        Identifier
+        Identifier,
+        BangToken,
+        AmpersandAmpersandToken,
+        PipePipeToken
     }
 }
