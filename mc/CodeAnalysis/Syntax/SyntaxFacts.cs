@@ -29,7 +29,7 @@ namespace Minsk.CodeAnalysis.Syntax
             {
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
-                case SyntaxKind.BadToken:
+                case SyntaxKind.BangToken:
                     return 5;
                 default:
                     return 0;

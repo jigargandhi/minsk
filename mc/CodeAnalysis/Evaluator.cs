@@ -29,7 +29,7 @@ namespace Minsk.CodeAnalysis
             {
                 var left = EvaluateExpression(bt.Left);
                 var right = EvaluateExpression(bt.Right);
-                switch (bt.OperatorKind)
+                switch (bt.Op.Kind)
                 {
                     case BoundBinaryOperatorKind.Addition:
                         return (int)left + (int)right;
@@ -44,7 +44,7 @@ namespace Minsk.CodeAnalysis
                     case BoundBinaryOperatorKind.LogicalOr:
                         return (bool)left || (bool)right;
                     default:
-                        throw new Exception($"Expected a binary operator {bt.OperatorKind}");
+                        throw new Exception($"Expected a binary operator {bt.Op.Kind}");
                 }
 
             }
@@ -52,7 +52,7 @@ namespace Minsk.CodeAnalysis
             if (root is BoundUnaryExpression us)
             {
                 var operand = EvaluateExpression(us.Operand);
-                switch (us.OperatorKind)
+                switch (us.Op.Kind)
                 {
                     case BoundUnaryOperatorKind.Negation:
                         return -(int)operand;
