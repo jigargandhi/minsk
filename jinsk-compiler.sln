@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mc", "mc\mc.csproj", "{17F31450-7699-4DFD-A2AA-DAF7C8BB1DC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minsk", "Minsk\Minsk.csproj", "{6F1843CC-EC83-481E-999C-C9297CC13F6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{17F31450-7699-4DFD-A2AA-DAF7C8BB1DC2}.Release|x64.Build.0 = Release|Any CPU
 		{17F31450-7699-4DFD-A2AA-DAF7C8BB1DC2}.Release|x86.ActiveCfg = Release|Any CPU
 		{17F31450-7699-4DFD-A2AA-DAF7C8BB1DC2}.Release|x86.Build.0 = Release|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Debug|x64.Build.0 = Debug|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Debug|x86.Build.0 = Debug|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Release|x64.ActiveCfg = Release|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Release|x64.Build.0 = Release|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Release|x86.ActiveCfg = Release|Any CPU
+		{6F1843CC-EC83-481E-999C-C9297CC13F6B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
