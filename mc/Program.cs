@@ -12,6 +12,8 @@ namespace Minsk
         private static void Main()
         {
             bool showTree = false;
+            var variables = new Dictionary<string, object>();
+
             while (true)
             {
                 Console.Write("> ");
@@ -32,7 +34,7 @@ namespace Minsk
                 }
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
-                var evaluationResult = compilation.Evaluate();
+                var evaluationResult = compilation.Evaluate(variables);
                 var diagnostics = evaluationResult.Diagnostics;
                 var color = Console.ForegroundColor;
                 if (showTree)
@@ -55,14 +57,14 @@ namespace Minsk
                         Console.ResetColor();
 
                         var prefix = line.Substring(0, diagnostic.Span.Start);
-                        var error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
+                        //var error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
                         var suffix = line.Substring(diagnostic.Span.End);
 
                         Console.Write("    ");
                         Console.Write(suffix);
 
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.Write(error);
+                        //Console.Write(error);
                         Console.ResetColor();
                         Console.Write(suffix);
                         Console.WriteLine();

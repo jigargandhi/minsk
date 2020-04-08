@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Minsk.CodeAnalysis.Binding;
 
 namespace Minsk.CodeAnalysis
@@ -6,10 +7,12 @@ namespace Minsk.CodeAnalysis
     class Evaluator
     {
         private readonly BoundExpression _root;
+        private readonly Dictionary<string, object> _variables;
 
-        public Evaluator(BoundExpression root)
+        public Evaluator(BoundExpression root, Dictionary<string, object> variables)
         {
             this._root = root;
+            _variables = variables;
         }
 
         public object Evaluate()
@@ -22,6 +25,19 @@ namespace Minsk.CodeAnalysis
             if (root is BoundLiteralExpression boundLiteralExpression)
             {
                 return boundLiteralExpression.Value;
+            }
+            
+            if (root is BoundVariableExpression v)
+            {
+                var value = _variables[v.Name];
+                return value;
+            }
+
+            if(root is BoundAssignmentExpression a)
+            {
+                var value = EvaluateExpression(a.Expression);
+                _variables[a.Name] = value;
+                return value;
             }
 
             if (root is BoundBinaryExpression bt)
@@ -67,6 +83,7 @@ namespace Minsk.CodeAnalysis
                         throw new Exception($"Unexpected unary operator {us.Kind}");
                 }
             }
+
 
             // if (root is ParenthesizedExpressionSyntax parenthesized)
             // {

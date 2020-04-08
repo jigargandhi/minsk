@@ -2,6 +2,7 @@ using System;
 
 namespace Minsk.CodeAnalysis.Binding
 {
+    
     internal sealed class BoundBinaryExpression : BoundExpression
     {
         public BoundBinaryExpression(BoundExpression left, BoundBinaryOperator op, BoundExpression right)
