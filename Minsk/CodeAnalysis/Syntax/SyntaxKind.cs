@@ -25,6 +25,9 @@ namespace Minsk.CodeAnalysis.Syntax
         AmpersandAmpersandToken,
         PipePipeToken,
         EqualsEqualsToken,
-        BangEqualsToken
+        BangEqualsToken,
+        NameExpression,
+        AssignmentExpression,
+        EqualsToken
     }
 }

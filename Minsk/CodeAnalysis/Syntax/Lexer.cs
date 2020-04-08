@@ -126,7 +126,11 @@ namespace Minsk.CodeAnalysis.Syntax
                         _position += 2;
                         return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
                     }
-                    break;
+                    else
+                    {
+                        _position++;
+                        return new SyntaxToken(SyntaxKind.EqualsToken, start, "=", null);
+                    }
             }
 
             _diagnostics.ReportBadCharacter(_position, Current);

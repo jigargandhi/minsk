@@ -4,7 +4,9 @@ namespace Minsk.CodeAnalysis.Binding
     {
         UnaryExpression,
         LiteralExpression,
-        BinaryExpression
+        BinaryExpression,
+        VariableExpression,
+        AssignmentExpression
     }
 
 }

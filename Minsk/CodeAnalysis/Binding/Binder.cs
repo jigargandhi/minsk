@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Minsk.CodeAnalysis.Syntax;
 
 namespace Minsk.CodeAnalysis.Binding
@@ -7,6 +8,12 @@ namespace Minsk.CodeAnalysis.Binding
     internal sealed class Binder
     {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
+        private Dictionary<VariableSymbol, object> _variables;
+
+        public Binder(Dictionary<VariableSymbol, object> variables)
+        {
+            _variables = variables;
+        }
 
         public DiagnosticBag Diagnostics => _diagnostics;
         public BoundExpression BindExpression(ExpressionSyntax syntax)
@@ -20,11 +27,21 @@ namespace Minsk.CodeAnalysis.Binding
                 case SyntaxKind.LiteralExpression:
                     return BindLiteralExpression((LiteralExpressionSyntax)syntax);
                 case SyntaxKind.ParenthesizedExpression:
-                    return BindExpression(((ParenthesizedExpressionSyntax)syntax).Expression);
+                    return BindParenthesizedExpression(((ParenthesizedExpressionSyntax)syntax));
+                case SyntaxKind.NameExpression:
+                    return BindNameExpression((NameExpressionSyntax)syntax);
+                case SyntaxKind.AssignmentExpression:
+                    return BindAssignmentExpression((AssignmentExpressionSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected expression {syntax.Kind}");
             }
         }
+
+        private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
+        {
+            return BindExpression(syntax.Expression);
+        }
+
 
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
         {
@@ -55,10 +72,46 @@ namespace Minsk.CodeAnalysis.Binding
             if (boundBinaryOperator == null)
             {
                 _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundLeftOperand.Type, boundRightOperand.Type);
-                
+
                 return boundLeftOperand;
             }
             return new BoundBinaryExpression(boundLeftOperand, boundBinaryOperator, boundRightOperand);
+        }
+
+        private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
+        {
+            var name = syntax.IdentifierToken.Text;
+            var boundExpression = BindExpression(syntax.Expression);
+            var boundType = boundExpression.Type;
+            var existingVariable = _variables.Keys.FirstOrDefault(v => v.Name == name);
+            if (existingVariable != null)
+            {
+                _variables.Remove(existingVariable);
+            }
+            var variable = new VariableSymbol(name, boundType);
+            _variables[variable] = null;
+            // var defaultValue =
+            // boundType == typeof(int) ? (object)0 :
+            //     boundType == typeof(bool) ? (object)false : null;
+
+            // if (defaultValue == null)
+            // {
+            //     throw new Exception($"Unexpected {boundType}");
+            // }
+            // _variables[variable] = defaultValue;
+            return new BoundAssignmentExpression(variable, boundExpression);
+        }
+
+        private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
+        {
+            var name = syntax.IdentifierToken.Text;
+            var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
+            if (variable == null)
+            {
+                _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+                return new BoundLiteralExpression(0);
+            }
+            return new BoundVariableExpression(variable);
         }
     }
 
