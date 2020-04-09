@@ -88,5 +88,17 @@ namespace Minsk.CodeAnalysis.Syntax
                 }
             }
         }
+
+        public static IEnumerable<object> GetUnaryOperatorKinds()
+        {
+            var values = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+            foreach (var kind in values)
+            {
+                if (kind.GetUnaryOperatorPrecedence() > 0)
+                {
+                    yield return kind;
+                }
+            }
+        }
     }
 }
