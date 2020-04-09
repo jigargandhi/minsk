@@ -37,7 +37,7 @@ namespace Minsk.CodeAnalysis.Syntax
             _position++;
         }
 
-        public SyntaxToken NextToken()
+        public SyntaxToken Lex()
         {
             var start = _position;
 
