@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace Minsk.CodeAnalysis.Syntax
 {
-    internal static class SyntaxFacts
+    public static class SyntaxFacts
     {
         public static int GetBinaryOperatorPrecedence(this SyntaxKind kind)
         {
@@ -49,6 +50,54 @@ namespace Minsk.CodeAnalysis.Syntax
                     return SyntaxKind.FalseKeyword;
                 default:
                     return SyntaxKind.Identifier;
+            }
+        }
+
+        public static string GetText(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.PlusToken: return "+";
+                case SyntaxKind.MinusToken: return "-";
+                case SyntaxKind.MultiplyToken: return "*";
+                case SyntaxKind.DivideToken: return "/";
+                case SyntaxKind.OpenParenthesisToken: return "(";
+                case SyntaxKind.CloseParenthesisToken: return ")";
+                case SyntaxKind.AmpersandAmpersandToken: return "&&";
+                case SyntaxKind.PipePipeToken: return "||";
+                case SyntaxKind.EqualsEqualsToken: return "==";
+                case SyntaxKind.EqualsToken: return "=";
+                case SyntaxKind.BangEqualsToken: return "!=";
+                case SyntaxKind.TrueKeyword: return "true";
+                case SyntaxKind.FalseKeyword: return "false";
+                case SyntaxKind.BangToken: return "!";
+                default: return null;
+            }
+        }
+
+        
+
+        public static IEnumerable<SyntaxKind> GetBinaryOperatorKinds()
+        {
+            var values = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+            foreach (var kind in values)
+            {
+                if (kind.GetBinaryOperatorPrecedence() > 0)
+                {
+                    yield return kind;
+                }
+            }
+        }
+
+        public static IEnumerable<object> GetUnaryOperatorKinds()
+        {
+            var values = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+            foreach (var kind in values)
+            {
+                if (kind.GetUnaryOperatorPrecedence() > 0)
+                {
+                    yield return kind;
+                }
             }
         }
     }
