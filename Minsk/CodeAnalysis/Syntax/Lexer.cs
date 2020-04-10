@@ -175,7 +175,6 @@ namespace Minsk.CodeAnalysis.Syntax
                     break;
                 default:
                     throw new Exception("Unknown identifier");
-                    break;
             }
         }
 
