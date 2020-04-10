@@ -21,10 +21,5 @@ namespace Minsk.CodeAnalysis.Syntax
         public object Value { get; }
 
         public TextSpan Span => new TextSpan(Position, Text.Length);
-
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            return Enumerable.Empty<SyntaxNode>();
-        }
     }
 }
