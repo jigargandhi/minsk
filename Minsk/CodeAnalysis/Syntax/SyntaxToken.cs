@@ -21,6 +21,6 @@ namespace Minsk.CodeAnalysis.Syntax
 
         public object Value { get; }
 
-        public override TextSpan Span => new TextSpan(Position, Text.Length);
+        public override TextSpan Span => new TextSpan(Position, Text?.Length ?? 0);
     }
 }
