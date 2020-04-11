@@ -28,6 +28,7 @@ namespace Minsk.CodeAnalysis.Syntax
         BangEqualsToken,
         NameExpression,
         AssignmentExpression,
-        EqualsToken
+        EqualsToken,
+        CompilationUnit
     }
 }

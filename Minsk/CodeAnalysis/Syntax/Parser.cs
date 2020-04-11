@@ -57,12 +57,11 @@ namespace Minsk.CodeAnalysis.Syntax
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
-        public SyntaxTree Parse()
+        public CompilationUnitSyntax ParseCompilationUnit()
         {
             var expression = ParseExpression();
             var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(_text, Diagnostics.ToImmutableArray(), expression, endOfFileToken);
-
+            return new CompilationUnitSyntax(expression, endOfFileToken);
         }
 
         private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
