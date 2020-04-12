@@ -71,6 +71,8 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.TrueKeyword: return "true";
                 case SyntaxKind.FalseKeyword: return "false";
                 case SyntaxKind.BangToken: return "!";
+                case SyntaxKind.OpenBraceToken: return "{";
+                case SyntaxKind.CloseBraceToken: return "}";
                 default: return null;
             }
         }
