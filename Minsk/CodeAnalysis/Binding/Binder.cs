@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Minsk.CodeAnalysis.Syntax;
 
@@ -8,13 +9,50 @@ namespace Minsk.CodeAnalysis.Binding
     internal sealed class Binder
     {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-        private Dictionary<VariableSymbol, object> _variables;
+        private BoundScope _scope;
 
-        public Binder(Dictionary<VariableSymbol, object> variables)
+        public Binder(BoundScope parent)
         {
-            _variables = variables;
+            _scope = new BoundScope(parent);
         }
 
+        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitSyntax syntax)
+        {
+            var parentScope = CreateParentScopes(previous);
+            var binder = new Binder(parentScope);
+            var expression = binder.BindExpression(syntax.Expression);
+            var variables = binder._scope.GetDeclaredVariables();
+            var diagnostics = binder.Diagnostics.ToImmutableArray();
+
+            if (previous != null)
+            {
+                diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
+            }
+            return new BoundGlobalScope(previous, diagnostics, variables, expression);
+        }
+
+        private static BoundScope CreateParentScopes(BoundGlobalScope previous)
+        {
+            var stack = new Stack<BoundGlobalScope>();
+            while (previous != null)
+            {
+                stack.Push(previous);
+                previous = previous.Previous;
+            }
+            BoundScope parent = null;
+            while (stack.Count > 0)
+            {
+                previous = stack.Pop();
+                var scope = new BoundScope(parent);
+                foreach (var v in previous.Variables)
+                {
+                    scope.TryDeclare(v);
+                }
+                parent = scope;
+            }
+
+            return parent;
+        }
         public DiagnosticBag Diagnostics => _diagnostics;
         public BoundExpression BindExpression(ExpressionSyntax syntax)
         {
@@ -83,30 +121,25 @@ namespace Minsk.CodeAnalysis.Binding
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
             var boundType = boundExpression.Type;
-            var existingVariable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-            if (existingVariable != null)
-            {
-                _variables.Remove(existingVariable);
-            }
-            var variable = new VariableSymbol(name, boundType);
-            _variables[variable] = null;
-            // var defaultValue =
-            // boundType == typeof(int) ? (object)0 :
-            //     boundType == typeof(bool) ? (object)false : null;
 
-            // if (defaultValue == null)
-            // {
-            //     throw new Exception($"Unexpected {boundType}");
-            // }
-            // _variables[variable] = defaultValue;
+            if (!_scope.TryLookup(name, out var variable))
+            {
+                variable = new VariableSymbol(name, boundType);
+                _scope.TryDeclare(variable);
+            }
+
+            if(boundExpression.Type != variable.Type)
+            {
+                _diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpression.Type, variable.Type);
+                return boundExpression;
+            }
             return new BoundAssignmentExpression(variable, boundExpression);
         }
 
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-            var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-            if (variable == null)
+            if (!_scope.TryLookup(name, out VariableSymbol variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundLiteralExpression(0);
