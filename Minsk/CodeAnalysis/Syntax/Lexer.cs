@@ -182,7 +182,9 @@ namespace Minsk.CodeAnalysis.Syntax
             var text = _text.ToString(_start, length);
             _kind = SyntaxFacts.GetKeywordKind(text);
             switch (_kind)
-            {
+            {               
+                case SyntaxKind.LetKeyword:
+                case SyntaxKind.VarKeyword:
                 case SyntaxKind.Identifier:
                     _value = text;
                     break;

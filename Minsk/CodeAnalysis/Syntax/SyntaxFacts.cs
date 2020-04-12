@@ -48,6 +48,10 @@ namespace Minsk.CodeAnalysis.Syntax
                     return SyntaxKind.TrueKeyword;
                 case "false":
                     return SyntaxKind.FalseKeyword;
+                case "let":
+                    return SyntaxKind.LetKeyword;
+                case "var":
+                    return SyntaxKind.VarKeyword;
                 default:
                     return SyntaxKind.Identifier;
             }
@@ -70,6 +74,8 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.BangEqualsToken: return "!=";
                 case SyntaxKind.TrueKeyword: return "true";
                 case SyntaxKind.FalseKeyword: return "false";
+                case SyntaxKind.LetKeyword: return "let";
+                case SyntaxKind.VarKeyword: return "var";
                 case SyntaxKind.BangToken: return "!";
                 case SyntaxKind.OpenBraceToken: return "{";
                 case SyntaxKind.CloseBraceToken: return "}";
@@ -77,7 +83,7 @@ namespace Minsk.CodeAnalysis.Syntax
             }
         }
 
-        
+
 
         public static IEnumerable<SyntaxKind> GetBinaryOperatorKinds()
         {

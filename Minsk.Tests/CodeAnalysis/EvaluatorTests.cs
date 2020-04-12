@@ -27,7 +27,7 @@ namespace Minsk.Tests.CodeAnalysis
         [InlineData("true != true", false)]
         [InlineData("true && false", false)]
         [InlineData("true || false", true)]
-        [InlineData("(a=10)*a", 100)]
+        [InlineData("{var a=10 {a=10*a } }", 100)]
         public void Evaluate_Performs_CorrectEvaluation(string text, object expectedResult)
         {
             var expression = SyntaxTree.Parse(text);

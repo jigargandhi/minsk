@@ -8,7 +8,8 @@ namespace Minsk.CodeAnalysis.Binding
         VariableExpression,
         AssignmentExpression,
         BlockStatement,
-        ExpressionStatement
+        ExpressionStatement,
+        VariableDeclaration
     }
 
 }

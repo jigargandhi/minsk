@@ -67,23 +67,39 @@ namespace Minsk.CodeAnalysis.Syntax
 
         private StatementSyntax ParseStatement()
         {
-            if(Current.Kind == SyntaxKind.OpenBraceToken)
-                return ParseBlockStatement();
-
-            return ParseExpressionStatement();
-        }        
+            switch (Current.Kind)
+            {
+                case SyntaxKind.OpenBraceToken:
+                    return ParseBlockStatement();
+                case SyntaxKind.VarKeyword:
+                case SyntaxKind.LetKeyword:
+                    return ParseVariableDeclaration();
+                default:
+                    return ParseExpressionStatement();
+            }
+        }
 
         private StatementSyntax ParseBlockStatement()
         {
             var openBraceToken = MatchToken(SyntaxKind.OpenBraceToken);
             var statementBuilder = ImmutableArray.CreateBuilder<StatementSyntax>();
-            while(Current.Kind != SyntaxKind.EndOfFileToken  && Current.Kind!=SyntaxKind.CloseBraceToken)
+            while (Current.Kind != SyntaxKind.EndOfFileToken && Current.Kind != SyntaxKind.CloseBraceToken)
             {
                 var statement = ParseStatement();
                 statementBuilder.Add(statement);
             }
             var closeBraceToken = MatchToken(SyntaxKind.CloseBraceToken);
             return new BlockStatementSyntax(openBraceToken, statementBuilder.ToImmutable(), closeBraceToken);
+        }      
+
+        private StatementSyntax ParseVariableDeclaration()
+        {
+            var expected = Current.Kind == SyntaxKind.LetKeyword ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword;
+            var keyword = MatchToken(expected);
+            var identifier = MatchToken(SyntaxKind.Identifier);
+            var equalsToken = MatchToken(SyntaxKind.EqualsToken);
+            var expression = ParseExpression();
+            return new VariableDeclarationSyntax(keyword, identifier, equalsToken, expression);
         }
 
         private StatementSyntax ParseExpressionStatement()

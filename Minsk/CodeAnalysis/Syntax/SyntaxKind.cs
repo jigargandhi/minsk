@@ -33,6 +33,9 @@ namespace Minsk.CodeAnalysis.Syntax
         BlockStatement,
         ExpressionStatement,
         OpenBraceToken,
-        CloseBraceToken
+        CloseBraceToken,
+        VariableDeclaration,
+        LetKeyword,
+        VarKeyword
     }
 }
