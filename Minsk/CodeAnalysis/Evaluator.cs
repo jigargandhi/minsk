@@ -38,7 +38,7 @@ namespace Minsk.CodeAnalysis
                 default:
                     throw new Exception($"Unexpected node {node.Kind}");
             }
-        }        
+        }
 
         private void EvaluateExpressionStatement(BoundExpressionStatement node)
         {
@@ -116,6 +116,14 @@ namespace Minsk.CodeAnalysis
                     return Equals(left, right);
                 case BoundBinaryOperatorKind.NotEquals:
                     return !Equals(left, right);
+                case BoundBinaryOperatorKind.Less:
+                    return (int)left < (int)right;
+                case BoundBinaryOperatorKind.LessOrEquals:
+                    return (int)left <= (int)right;
+                case BoundBinaryOperatorKind.Greater:
+                    return (int)left > (int)right;
+                case BoundBinaryOperatorKind.GreaterOrEquals:
+                    return (int)left >= (int)right;
                 default:
                     throw new Exception($"Expected a binary operator {bt.Op.Kind}");
             }

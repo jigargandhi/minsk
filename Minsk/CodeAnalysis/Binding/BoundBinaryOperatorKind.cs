@@ -11,7 +11,11 @@ namespace Minsk.CodeAnalysis.Binding
 
         Equals,
 
-        NotEquals
+        NotEquals,
+        Less,
+        Greater,
+        LessOrEquals,
+        GreaterOrEquals
     }
 
 }
