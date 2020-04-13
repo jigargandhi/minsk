@@ -6,10 +6,12 @@ namespace Minsk.CodeAnalysis
 {
     class Evaluator
     {
-        private readonly BoundExpression _root;
+        private readonly BoundStatement _root;
         private readonly Dictionary<VariableSymbol, object> _variables;
 
-        public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object> variables)
+        private object _lastValue = null;
+
+        public Evaluator(BoundStatement root, Dictionary<VariableSymbol, object> variables)
         {
             this._root = root;
             _variables = variables;
@@ -17,25 +19,62 @@ namespace Minsk.CodeAnalysis
 
         public object Evaluate()
         {
-            return EvaluateExpression(_root);
+            EvaluateStatement(_root);
+            return _lastValue;
+        }
+        private void EvaluateStatement(BoundStatement node)
+        {
+            switch (node.Kind)
+            {
+                case BoundNodeKind.BlockStatement:
+                    EvaluateBlockStatement((BoundBlockStatement)node);
+                    break;
+                case BoundNodeKind.VariableDeclaration:
+                    EvaluateVariableDeclaration((BoundVariableDeclaration)node);
+                    break;
+                case BoundNodeKind.ExpressionStatement:
+                    EvaluateExpressionStatement((BoundExpressionStatement)node);
+                    break;
+                default:
+                    throw new Exception($"Unexpected node {node.Kind}");
+            }
+        }        
+
+        private void EvaluateExpressionStatement(BoundExpressionStatement node)
+        {
+            _lastValue = EvaluateExpression(node.Expression);
+        }
+        private void EvaluateVariableDeclaration(BoundVariableDeclaration node)
+        {
+            var value = EvaluateExpression(node.Initializer);
+            _variables[node.Variable] = value;
+            _lastValue = value;
         }
 
-        private object EvaluateExpression(BoundExpression root)
+        private void EvaluateBlockStatement(BoundBlockStatement node)
         {
-            switch (root.Kind)
+            foreach (var statement in node.Statements)
+            {
+                EvaluateStatement(statement);
+            }
+        }
+
+        private object EvaluateExpression(BoundExpression node)
+        {
+            switch (node.Kind)
             {
                 case BoundNodeKind.LiteralExpression:
-                    return EvaluateLiteralExpression((BoundLiteralExpression)root);
+                    return EvaluateLiteralExpression((BoundLiteralExpression)node);
                 case BoundNodeKind.VariableExpression:
-                    return EvaluateVariableExpression((BoundVariableExpression)root);
+                    return EvaluateVariableExpression((BoundVariableExpression)node);
                 case BoundNodeKind.AssignmentExpression:
-                    return EvaluateBoundAssignmentExpression((BoundAssignmentExpression)root);
+                    return EvaluateBoundAssignmentExpression((BoundAssignmentExpression)node);
                 case BoundNodeKind.BinaryExpression:
-                    return EvaluateBinaryExpression((BoundBinaryExpression)root);
+                    return EvaluateBinaryExpression((BoundBinaryExpression)node);
                 case BoundNodeKind.UnaryExpression:
-                    return EvaluateUnaryExpression((BoundUnaryExpression)root);
+                    return EvaluateUnaryExpression((BoundUnaryExpression)node);
                 default:
-                    throw new Exception($"unexpected node {root.Kind}");
+                    throw new Exception($"unexpected node {node.Kind}");
             }
 
         }

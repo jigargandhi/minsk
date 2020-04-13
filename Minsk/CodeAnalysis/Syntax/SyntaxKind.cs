@@ -28,6 +28,14 @@ namespace Minsk.CodeAnalysis.Syntax
         BangEqualsToken,
         NameExpression,
         AssignmentExpression,
-        EqualsToken
+        EqualsToken,
+        CompilationUnit,
+        BlockStatement,
+        ExpressionStatement,
+        OpenBraceToken,
+        CloseBraceToken,
+        VariableDeclaration,
+        LetKeyword,
+        VarKeyword
     }
 }

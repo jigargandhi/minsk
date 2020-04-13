@@ -63,7 +63,7 @@ namespace Minsk.CodeAnalysis.Text
                     continue;
                 }
             }
-            if (position > lineStart)
+            if (position >= lineStart)
             {
                 AddLine(result, sourceText, lineStart, position, 0);
             }

@@ -6,7 +6,10 @@ namespace Minsk.CodeAnalysis.Binding
         LiteralExpression,
         BinaryExpression,
         VariableExpression,
-        AssignmentExpression
+        AssignmentExpression,
+        BlockStatement,
+        ExpressionStatement,
+        VariableDeclaration
     }
 
 }

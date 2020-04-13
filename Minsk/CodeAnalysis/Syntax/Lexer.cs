@@ -80,6 +80,14 @@ namespace Minsk.CodeAnalysis.Syntax
                     _kind = SyntaxKind.CloseParenthesisToken;
                     _position++;
                     break;
+                case '{':
+                    _kind = SyntaxKind.OpenBraceToken;
+                    _position++;
+                    break;
+                case '}':
+                    _kind = SyntaxKind.CloseBraceToken;
+                    _position++;
+                    break;
                 case '!':
                     _position++;
                     if (Current == '=')
@@ -119,7 +127,16 @@ namespace Minsk.CodeAnalysis.Syntax
                         _kind = SyntaxKind.EqualsToken;
                     }
                     break;
-                case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
                     ReadNumberToken();
                     break;
                 case ' ':
@@ -164,7 +181,10 @@ namespace Minsk.CodeAnalysis.Syntax
             var length = _position - _start;
             var text = _text.ToString(_start, length);
             _kind = SyntaxFacts.GetKeywordKind(text);
-            switch(_kind){
+            switch (_kind)
+            {               
+                case SyntaxKind.LetKeyword:
+                case SyntaxKind.VarKeyword:
                 case SyntaxKind.Identifier:
                     _value = text;
                     break;

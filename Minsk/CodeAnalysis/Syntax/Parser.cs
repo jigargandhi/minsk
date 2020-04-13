@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Minsk.CodeAnalysis.Text;
@@ -57,12 +58,54 @@ namespace Minsk.CodeAnalysis.Syntax
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
-        public SyntaxTree Parse()
+        public CompilationUnitSyntax ParseCompilationUnit()
+        {
+            var statement = ParseStatement();
+            var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
+            return new CompilationUnitSyntax(statement, endOfFileToken);
+        }
+
+        private StatementSyntax ParseStatement()
+        {
+            switch (Current.Kind)
+            {
+                case SyntaxKind.OpenBraceToken:
+                    return ParseBlockStatement();
+                case SyntaxKind.VarKeyword:
+                case SyntaxKind.LetKeyword:
+                    return ParseVariableDeclaration();
+                default:
+                    return ParseExpressionStatement();
+            }
+        }
+
+        private StatementSyntax ParseBlockStatement()
+        {
+            var openBraceToken = MatchToken(SyntaxKind.OpenBraceToken);
+            var statementBuilder = ImmutableArray.CreateBuilder<StatementSyntax>();
+            while (Current.Kind != SyntaxKind.EndOfFileToken && Current.Kind != SyntaxKind.CloseBraceToken)
+            {
+                var statement = ParseStatement();
+                statementBuilder.Add(statement);
+            }
+            var closeBraceToken = MatchToken(SyntaxKind.CloseBraceToken);
+            return new BlockStatementSyntax(openBraceToken, statementBuilder.ToImmutable(), closeBraceToken);
+        }      
+
+        private StatementSyntax ParseVariableDeclaration()
+        {
+            var expected = Current.Kind == SyntaxKind.LetKeyword ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword;
+            var keyword = MatchToken(expected);
+            var identifier = MatchToken(SyntaxKind.Identifier);
+            var equalsToken = MatchToken(SyntaxKind.EqualsToken);
+            var expression = ParseExpression();
+            return new VariableDeclarationSyntax(keyword, identifier, equalsToken, expression);
+        }
+
+        private StatementSyntax ParseExpressionStatement()
         {
             var expression = ParseExpression();
-            var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(_text, Diagnostics.ToImmutableArray(), expression, endOfFileToken);
-
+            return new ExpressionStatementSyntax(expression);
         }
 
         private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
