@@ -10,7 +10,8 @@ namespace Minsk.CodeAnalysis.Binding
         BlockStatement,
         ExpressionStatement,
         VariableDeclaration,
-        IfStatement
+        IfStatement,
+        WhileStatement
     }
 
 }

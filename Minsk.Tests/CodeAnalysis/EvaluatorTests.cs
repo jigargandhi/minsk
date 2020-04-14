@@ -41,6 +41,7 @@ namespace Minsk.Tests.CodeAnalysis
         [InlineData("{var a = 0 if a==5 a = 5 a=10 a}", 10)]
         [InlineData("{var a = 0 if a==20 a = 5 else a= 10 a}", 10)]
         [InlineData("{var a = 20 if a==20 a = 5 else a= 10 a}", 5)]
+        [InlineData("{var a = 25 while a>20 a = a-1 a}", 20)]
         public void Evaluate_Performs_CorrectEvaluation(string text, object expectedResult)
         {
             AssertValue(text, expectedResult);

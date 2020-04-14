@@ -60,6 +60,8 @@ namespace Minsk.CodeAnalysis.Syntax
                     return SyntaxKind.IfKeyword;
                 case "else":
                     return SyntaxKind.ElseKeyword;
+                case "while":
+                    return SyntaxKind.WhileKeyword;
                 default:
                     return SyntaxKind.Identifier;
             }
@@ -93,6 +95,7 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.CloseBraceToken: return "}";
                 case SyntaxKind.IfKeyword: return "if";
                 case SyntaxKind.ElseKeyword: return "else";
+                case SyntaxKind.WhileKeyword: return "while";
                 default: return null;
             }
         }

@@ -44,6 +44,8 @@ namespace Minsk.CodeAnalysis.Syntax
         IfStatement,
         ElseClause,
         IfKeyword,
-        ElseKeyword
+        ElseKeyword,
+        WhileKeyword,
+        WhileStatement
     }
 }
