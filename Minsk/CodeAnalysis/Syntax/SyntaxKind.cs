@@ -40,6 +40,10 @@ namespace Minsk.CodeAnalysis.Syntax
         LessToken,
         LessOrEqualsToken,
         GreaterToken,
-        GreaterOrEqualsToken
+        GreaterOrEqualsToken,
+        IfStatement,
+        ElseClause,
+        IfKeyword,
+        ElseKeyword
     }
 }

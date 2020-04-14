@@ -56,6 +56,10 @@ namespace Minsk.CodeAnalysis.Syntax
                     return SyntaxKind.LetKeyword;
                 case "var":
                     return SyntaxKind.VarKeyword;
+                case "if":
+                    return SyntaxKind.IfKeyword;
+                case "else":
+                    return SyntaxKind.ElseKeyword;
                 default:
                     return SyntaxKind.Identifier;
             }
@@ -87,6 +91,8 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.BangToken: return "!";
                 case SyntaxKind.OpenBraceToken: return "{";
                 case SyntaxKind.CloseBraceToken: return "}";
+                case SyntaxKind.IfKeyword: return "if";
+                case SyntaxKind.ElseKeyword: return "else";
                 default: return null;
             }
         }

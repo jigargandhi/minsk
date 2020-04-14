@@ -32,6 +32,9 @@ namespace Minsk.CodeAnalysis
                 case BoundNodeKind.VariableDeclaration:
                     EvaluateVariableDeclaration((BoundVariableDeclaration)node);
                     break;
+                case BoundNodeKind.IfStatement:
+                    EvaluateIfStatement((BoundIfStatement)node);
+                    break;
                 case BoundNodeKind.ExpressionStatement:
                     EvaluateExpressionStatement((BoundExpressionStatement)node);
                     break;
@@ -39,7 +42,6 @@ namespace Minsk.CodeAnalysis
                     throw new Exception($"Unexpected node {node.Kind}");
             }
         }
-
         private void EvaluateExpressionStatement(BoundExpressionStatement node)
         {
             _lastValue = EvaluateExpression(node.Expression);
@@ -50,7 +52,17 @@ namespace Minsk.CodeAnalysis
             _variables[node.Variable] = value;
             _lastValue = value;
         }
-
+        private void EvaluateIfStatement(BoundIfStatement node)
+        {
+            var condition = (bool)EvaluateExpression(node.Condition);
+            if(condition)
+            {
+                EvaluateStatement(node.ThenStatement);
+            } else if (node.ElseStatement != null)
+            {
+                EvaluateStatement(node.ElseStatement);
+            }
+        }
         private void EvaluateBlockStatement(BoundBlockStatement node)
         {
             foreach (var statement in node.Statements)

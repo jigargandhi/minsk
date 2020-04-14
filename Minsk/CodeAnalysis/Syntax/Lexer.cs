@@ -209,6 +209,8 @@ namespace Minsk.CodeAnalysis.Syntax
             {
                 case SyntaxKind.LetKeyword:
                 case SyntaxKind.VarKeyword:
+                case SyntaxKind.IfKeyword:
+                case SyntaxKind.ElseKeyword:
                 case SyntaxKind.Identifier:
                     _value = text;
                     break;

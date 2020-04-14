@@ -27,14 +27,21 @@ namespace Minsk.CodeAnalysis.Syntax
             {
                 if (typeof(SyntaxNode).IsAssignableFrom(property.PropertyType))
                 {
-                    yield return (SyntaxNode)property.GetValue(this);
+                    var child = (SyntaxNode)property.GetValue(this);
+                    if (child != null)
+                    {
+                        yield return child;
+                    }
                 }
                 else if (typeof(IEnumerable<SyntaxNode>).IsAssignableFrom(property.PropertyType))
                 {
-                    var values = (IEnumerable<SyntaxNode>)property.GetValue(this);
-                    foreach (var value in values)
+                    var children = (IEnumerable<SyntaxNode>)property.GetValue(this);
+                    foreach (var child in children)
                     {
-                        yield return value;
+                        if (child != null)
+                        {
+                            yield return child;
+                        }
                     }
                 }
             }
@@ -58,7 +65,7 @@ namespace Minsk.CodeAnalysis.Syntax
                 Console.ForegroundColor = ConsoleColor.DarkGray;
 
             writer.Write(marker);
-            
+
             if (isToConsole)
                 Console.ForegroundColor = node is SyntaxNode ? ConsoleColor.Blue : ConsoleColor.Cyan;
 
@@ -69,7 +76,7 @@ namespace Minsk.CodeAnalysis.Syntax
                 writer.Write(t.Value);
 
             }
-            if(isToConsole)
+            if (isToConsole)
                 Console.ResetColor();
 
             writer.WriteLine();

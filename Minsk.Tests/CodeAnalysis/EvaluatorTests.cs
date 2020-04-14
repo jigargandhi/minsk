@@ -37,6 +37,10 @@ namespace Minsk.Tests.CodeAnalysis
         [InlineData("true && false", false)]
         [InlineData("true || false", true)]
         [InlineData("{var a=10 {a=10*a } }", 100)]
+        [InlineData("{var a = 0 if a==0 a=10 a}", 10)]
+        [InlineData("{var a = 0 if a==5 a = 5 a=10 a}", 10)]
+        [InlineData("{var a = 0 if a==20 a = 5 else a= 10 a}", 10)]
+        [InlineData("{var a = 20 if a==20 a = 5 else a= 10 a}", 5)]
         public void Evaluate_Performs_CorrectEvaluation(string text, object expectedResult)
         {
             AssertValue(text, expectedResult);
@@ -160,7 +164,7 @@ namespace Minsk.Tests.CodeAnalysis
                 throw new Exception("ERROR: must mark as many spans as there are expected diagnostics");
             }
             Assert.Equal(expectedDiagnostics.Length, results.Diagnostics.Length);
-            for (var i = 0; i < expectedDiagnostics.Length;i++)
+            for (var i = 0; i < expectedDiagnostics.Length; i++)
             {
                 var expectedMessage = expectedDiagnostics[i];
                 var actualMessage = results.Diagnostics[i].Message;
