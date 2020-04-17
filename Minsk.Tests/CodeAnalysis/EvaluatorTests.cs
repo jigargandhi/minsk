@@ -42,6 +42,7 @@ namespace Minsk.Tests.CodeAnalysis
         [InlineData("{var a = 0 if a==20 a = 5 else a= 10 a}", 10)]
         [InlineData("{var a = 20 if a==20 a = 5 else a= 10 a}", 5)]
         [InlineData("{var a = 25 while a>20 a = a-1 a}", 20)]
+        [InlineData("{var result = 0 for i = 1 to 10 { result = result + i } result}", 55)]
         public void Evaluate_Performs_CorrectEvaluation(string text, object expectedResult)
         {
             AssertValue(text, expectedResult);
@@ -115,6 +116,64 @@ namespace Minsk.Tests.CodeAnalysis
 
             var diagnostics = @"
                 Cannot convert type from 'System.Boolean' to 'System.Int32'
+            ";
+            AssertDiagnostics(text, diagnostics);
+        }
+        [Fact]
+        public void Evaulator_IfStatement_Reports_CannotConvert()
+        {
+            var text = @"
+            {
+                if [10]
+                    var x = 10
+            }";
+
+            var diagnostics = @"
+                Cannot convert type from 'System.Int32' to 'System.Boolean'
+            ";
+            AssertDiagnostics(text, diagnostics);
+        }
+        [Fact]
+        public void Evaulator_WhileStatement_Reports_CannotConvert()
+        {
+            var text = @"
+            {
+                while [10]
+                    var x = 10
+            }";
+
+            var diagnostics = @"
+                Cannot convert type from 'System.Int32' to 'System.Boolean'
+            ";
+            AssertDiagnostics(text, diagnostics);
+        }
+        [Fact]
+        public void Evaulator_ForStatement_Reports_CannotConvert_LowerBound()
+        {
+            var text = @"
+            {
+                var result = 0
+                for i = [false] to 10
+                    result = result + i
+            }";
+
+            var diagnostics = @"
+                Cannot convert type from 'System.Boolean' to 'System.Int32'
+            ";
+            AssertDiagnostics(text, diagnostics);
+        }
+        [Fact]
+        public void Evaulator_ForStatement_Reports_CannotConvert_UpperBound()
+        {
+            var text = @"
+            {
+                var result = 0
+                for i = 0 to [true]
+                    result = result + i
+            }";
+
+            var diagnostics = @"
+               Cannot convert type from 'System.Boolean' to 'System.Int32'
             ";
             AssertDiagnostics(text, diagnostics);
         }

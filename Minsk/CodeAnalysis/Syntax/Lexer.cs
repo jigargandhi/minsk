@@ -213,6 +213,8 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.ElseKeyword:
                 case SyntaxKind.Identifier:
                 case SyntaxKind.WhileKeyword:
+                case SyntaxKind.ForKeyword:
+                case SyntaxKind.ToKeyword:
                     _value = text;
                     break;
                 case SyntaxKind.TrueKeyword:

@@ -48,18 +48,22 @@ namespace Minsk.CodeAnalysis.Syntax
         {
             switch (text)
             {
-                case "true":
-                    return SyntaxKind.TrueKeyword;
-                case "false":
-                    return SyntaxKind.FalseKeyword;
-                case "let":
-                    return SyntaxKind.LetKeyword;
-                case "var":
-                    return SyntaxKind.VarKeyword;
-                case "if":
-                    return SyntaxKind.IfKeyword;
                 case "else":
                     return SyntaxKind.ElseKeyword;
+                case "false":
+                    return SyntaxKind.FalseKeyword;
+                case "for":
+                    return SyntaxKind.ForKeyword;
+                case "if":
+                    return SyntaxKind.IfKeyword;
+                case "let":
+                    return SyntaxKind.LetKeyword;
+                case "to":
+                    return SyntaxKind.ToKeyword;
+                case "true":
+                    return SyntaxKind.TrueKeyword;
+                case "var":
+                    return SyntaxKind.VarKeyword;
                 case "while":
                     return SyntaxKind.WhileKeyword;
                 default:
@@ -96,6 +100,8 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.IfKeyword: return "if";
                 case SyntaxKind.ElseKeyword: return "else";
                 case SyntaxKind.WhileKeyword: return "while";
+                case SyntaxKind.ForKeyword: return "for";
+                case SyntaxKind.ToKeyword: return "to";
                 default: return null;
             }
         }

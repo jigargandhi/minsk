@@ -65,6 +65,8 @@ namespace Minsk.CodeAnalysis.Binding
                     return BindVariableDeclaration((VariableDeclarationSyntax)syntax);
                 case SyntaxKind.IfStatement:
                     return BindIfStatement((IfStatementSyntax)syntax);
+                case SyntaxKind.ForStatement:
+                    return BindForStatement((ForStatementSyntax)syntax);
                 case SyntaxKind.WhileStatement:
                     return BindWhileStatement((WhileStatementSyntax)syntax);
                 case SyntaxKind.ExpressionStatement:
@@ -73,6 +75,7 @@ namespace Minsk.CodeAnalysis.Binding
                     throw new Exception($"Unexpected expression {syntax.Kind}");
             }
         }
+
 
 
         private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
@@ -108,7 +111,22 @@ namespace Minsk.CodeAnalysis.Binding
             var elseStatement = syntax.ElseClause == null ? null : BindStatement(syntax.ElseClause.ElseStatement);
             return new BoundIfStatement(condition, thenStatement, elseStatement);
         }
-        
+        private BoundStatement BindForStatement(ForStatementSyntax syntax)
+        {
+            var name = syntax.Identifier.Text;
+            var variable = new VariableSymbol(name, true, typeof(int));
+            _scope = new BoundScope(_scope);
+
+            if (!_scope.TryDeclare(variable))
+            {
+                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
+            }
+            var lowerBound = BindExpression(syntax.LowerBound, typeof(int));
+            var upperBound = BindExpression(syntax.UpperBound, typeof(int));
+            var body = BindStatement(syntax.Body);
+            _scope = _scope.Parent;
+            return new BoundForStatement(variable, lowerBound, upperBound, body);
+        }
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
             var condition = BindExpression(syntax.Condition, typeof(bool));
