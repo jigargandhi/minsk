@@ -36,6 +36,19 @@ namespace Minsk.CodeAnalysis.Syntax
         CloseBraceToken,
         VariableDeclaration,
         LetKeyword,
-        VarKeyword
+        VarKeyword,
+        LessToken,
+        LessOrEqualsToken,
+        GreaterToken,
+        GreaterOrEqualsToken,
+        IfStatement,
+        ElseClause,
+        IfKeyword,
+        ElseKeyword,
+        WhileKeyword,
+        WhileStatement,
+        ForKeyword,
+        ForStatement,
+        ToKeyword
     }
 }

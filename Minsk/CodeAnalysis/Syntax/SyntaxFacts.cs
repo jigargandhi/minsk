@@ -17,6 +17,10 @@ namespace Minsk.CodeAnalysis.Syntax
                     return 4;
                 case SyntaxKind.EqualsEqualsToken:
                 case SyntaxKind.BangEqualsToken:
+                case SyntaxKind.LessOrEqualsToken:
+                case SyntaxKind.GreaterOrEqualsToken:
+                case SyntaxKind.LessToken:
+                case SyntaxKind.GreaterToken:
                     return 3;
                 case SyntaxKind.AmpersandAmpersandToken:
                     return 2;
@@ -44,14 +48,24 @@ namespace Minsk.CodeAnalysis.Syntax
         {
             switch (text)
             {
-                case "true":
-                    return SyntaxKind.TrueKeyword;
+                case "else":
+                    return SyntaxKind.ElseKeyword;
                 case "false":
                     return SyntaxKind.FalseKeyword;
+                case "for":
+                    return SyntaxKind.ForKeyword;
+                case "if":
+                    return SyntaxKind.IfKeyword;
                 case "let":
                     return SyntaxKind.LetKeyword;
+                case "to":
+                    return SyntaxKind.ToKeyword;
+                case "true":
+                    return SyntaxKind.TrueKeyword;
                 case "var":
                     return SyntaxKind.VarKeyword;
+                case "while":
+                    return SyntaxKind.WhileKeyword;
                 default:
                     return SyntaxKind.Identifier;
             }
@@ -72,6 +86,10 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.EqualsEqualsToken: return "==";
                 case SyntaxKind.EqualsToken: return "=";
                 case SyntaxKind.BangEqualsToken: return "!=";
+                case SyntaxKind.LessToken: return "<";
+                case SyntaxKind.LessOrEqualsToken: return "<=";
+                case SyntaxKind.GreaterToken: return ">";
+                case SyntaxKind.GreaterOrEqualsToken: return ">=";
                 case SyntaxKind.TrueKeyword: return "true";
                 case SyntaxKind.FalseKeyword: return "false";
                 case SyntaxKind.LetKeyword: return "let";
@@ -79,6 +97,11 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.BangToken: return "!";
                 case SyntaxKind.OpenBraceToken: return "{";
                 case SyntaxKind.CloseBraceToken: return "}";
+                case SyntaxKind.IfKeyword: return "if";
+                case SyntaxKind.ElseKeyword: return "else";
+                case SyntaxKind.WhileKeyword: return "while";
+                case SyntaxKind.ForKeyword: return "for";
+                case SyntaxKind.ToKeyword: return "to";
                 default: return null;
             }
         }

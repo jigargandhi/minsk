@@ -127,6 +127,30 @@ namespace Minsk.CodeAnalysis.Syntax
                         _kind = SyntaxKind.EqualsToken;
                     }
                     break;
+                case '<':
+                    _position++;
+                    if (Current == '=')
+                    {
+                        _kind = SyntaxKind.LessOrEqualsToken;
+                        _position++;
+                    }
+                    else
+                    {
+                        _kind = SyntaxKind.LessToken;
+                    }
+                    break;
+                case '>':
+                    _position++;
+                    if (Current == '=')
+                    {
+                        _kind = SyntaxKind.GreaterOrEqualsToken;
+                        _position++;
+                    }
+                    else
+                    {
+                        _kind = SyntaxKind.GreaterToken;
+                    }
+                    break;
                 case '0':
                 case '1':
                 case '2':
@@ -182,10 +206,15 @@ namespace Minsk.CodeAnalysis.Syntax
             var text = _text.ToString(_start, length);
             _kind = SyntaxFacts.GetKeywordKind(text);
             switch (_kind)
-            {               
+            {
                 case SyntaxKind.LetKeyword:
                 case SyntaxKind.VarKeyword:
+                case SyntaxKind.IfKeyword:
+                case SyntaxKind.ElseKeyword:
                 case SyntaxKind.Identifier:
+                case SyntaxKind.WhileKeyword:
+                case SyntaxKind.ForKeyword:
+                case SyntaxKind.ToKeyword:
                     _value = text;
                     break;
                 case SyntaxKind.TrueKeyword:

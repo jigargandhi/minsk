@@ -63,12 +63,20 @@ namespace Minsk.CodeAnalysis.Binding
                     return BindBlockStatement((BlockStatementSyntax)syntax);
                 case SyntaxKind.VariableDeclaration:
                     return BindVariableDeclaration((VariableDeclarationSyntax)syntax);
+                case SyntaxKind.IfStatement:
+                    return BindIfStatement((IfStatementSyntax)syntax);
+                case SyntaxKind.ForStatement:
+                    return BindForStatement((ForStatementSyntax)syntax);
+                case SyntaxKind.WhileStatement:
+                    return BindWhileStatement((WhileStatementSyntax)syntax);
                 case SyntaxKind.ExpressionStatement:
                     return BindExpressionStatement((ExpressionStatementSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected expression {syntax.Kind}");
             }
         }
+
+
 
         private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
         {
@@ -96,10 +104,51 @@ namespace Minsk.CodeAnalysis.Binding
             return new BoundVariableDeclaration(variable, expression);
         }
 
+        private BoundStatement BindIfStatement(IfStatementSyntax syntax)
+        {
+            var condition = BindExpression(syntax.Condition, typeof(bool));
+            var thenStatement = BindStatement(syntax.ThenStatement);
+            var elseStatement = syntax.ElseClause == null ? null : BindStatement(syntax.ElseClause.ElseStatement);
+            return new BoundIfStatement(condition, thenStatement, elseStatement);
+        }
+        private BoundStatement BindForStatement(ForStatementSyntax syntax)
+        {
+            var name = syntax.Identifier.Text;
+            var variable = new VariableSymbol(name, true, typeof(int));
+            _scope = new BoundScope(_scope);
+
+            if (!_scope.TryDeclare(variable))
+            {
+                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
+            }
+            var lowerBound = BindExpression(syntax.LowerBound, typeof(int));
+            var upperBound = BindExpression(syntax.UpperBound, typeof(int));
+            var body = BindStatement(syntax.Body);
+            _scope = _scope.Parent;
+            return new BoundForStatement(variable, lowerBound, upperBound, body);
+        }
+        private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
+        {
+            var condition = BindExpression(syntax.Condition, typeof(bool));
+            var body = BindStatement(syntax.Body);
+            return new BoundWhileStatement(condition, body);
+        }
+
         private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
         {
             var expression = BindExpression(syntax.Expression);
             return new BoundExpressionStatement(expression);
+        }
+
+        private BoundExpression BindExpression(ExpressionSyntax syntax, Type targetType)
+        {
+            var result = BindExpression(syntax);
+            if (result.Type != targetType)
+            {
+                _diagnostics.ReportCannotConvert(syntax.Span, result.Type, targetType);
+            }
+
+            return result;
         }
 
         public BoundExpression BindExpression(ExpressionSyntax syntax)
@@ -175,7 +224,7 @@ namespace Minsk.CodeAnalysis.Binding
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return boundExpression;
             }
-            if(variable.IsReadOnly)
+            if (variable.IsReadOnly)
             {
                 _diagnostics.ReportCannotAssign(syntax.EqualsToken.Span, name);
             }
@@ -190,6 +239,12 @@ namespace Minsk.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
+            if(string.IsNullOrEmpty(name))
+            {
+                // this means the token was inserted by parser and we already reported an error
+                
+                return new BoundLiteralExpression(0);
+            }
             if (!_scope.TryLookup(name, out VariableSymbol variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);

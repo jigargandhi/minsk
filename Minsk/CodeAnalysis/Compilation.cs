@@ -45,13 +45,15 @@ namespace Minsk.CodeAnalysis
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
             var boundExpression = GlobalScope.Statement;
-            var evaluator = new Evaluator(boundExpression, variables);
-            var value = evaluator.Evaluate();
+            
             var diagnostics = SyntaxTree.Diagnostics.Concat(GlobalScope.Diagnostics).ToImmutableArray();
             if (diagnostics.Any())
             {
                 return new EvaluationResult(diagnostics, null);
             }
+
+            var evaluator = new Evaluator(boundExpression, variables);
+            var value = evaluator.Evaluate();
 
             return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
         }
