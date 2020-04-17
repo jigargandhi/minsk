@@ -69,12 +69,38 @@ namespace Minsk.Tests.CodeAnalysis
         }
 
         [Fact]
+        public void Evaulator_BlockStatement_NoInfiniteLoop()
+        {
+            var text = @"
+                {
+                    [)][]
+                
+            ";
+
+            var diagnostics = @"
+                Unexpected token 'CloseParenthesisToken' expected 'Identifier'
+                Unexpected token 'EndOfFileToken' expected 'CloseBraceToken'
+            ";
+            AssertDiagnostics(text, diagnostics);
+        }
+        [Fact]
         public void Evaulator_Name_Reports_Undefined()
         {
             var text = @"[x] + 10";
 
             var diagnostics = @"
                 Variable 'x' doesn't exist
+            ";
+            AssertDiagnostics(text, diagnostics);
+        }
+
+        [Fact]
+        public void Evaulator_NoValue_DoesNotThrowError()
+        {
+            var text = @"[]";
+
+            var diagnostics = @"
+                Unexpected token 'EndOfFileToken' expected 'Identifier'
             ";
             AssertDiagnostics(text, diagnostics);
         }
@@ -106,7 +132,7 @@ namespace Minsk.Tests.CodeAnalysis
         }
 
         [Fact]
-        public void Evaulator_Assigned_Reports_CannotConvert()
+        public void Evaulator_AssignmentExpression_Reports_CannotConvert()
         {
             var text = @"
             {

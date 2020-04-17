@@ -239,6 +239,12 @@ namespace Minsk.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
+            if(string.IsNullOrEmpty(name))
+            {
+                // this means the token was inserted by parser and we already reported an error
+                
+                return new BoundLiteralExpression(0);
+            }
             if (!_scope.TryLookup(name, out VariableSymbol variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);

@@ -40,7 +40,7 @@ namespace Minsk.CodeAnalysis
 
         internal void ReportUnexpectedToken(TextSpan span, SyntaxKind actual, SyntaxKind expected)
         {
-            var message = $"Unexpected token '{actual}' expected {expected}";
+            var message = $"Unexpected token '{actual}' expected '{expected}'";
             Report(span, message);
         }
 
