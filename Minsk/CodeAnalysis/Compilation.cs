@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Minsk.CodeAnalysis.Binding;
+using Minsk.CodeAnalysis.Lowering;
 using Minsk.CodeAnalysis.Syntax;
 
 namespace Minsk.CodeAnalysis
@@ -46,7 +47,6 @@ namespace Minsk.CodeAnalysis
         }
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
-            var boundExpression = GlobalScope.Statement;
             
             var diagnostics = SyntaxTree.Diagnostics.Concat(GlobalScope.Diagnostics).ToImmutableArray();
             if (diagnostics.Any())
@@ -54,7 +54,8 @@ namespace Minsk.CodeAnalysis
                 return new EvaluationResult(diagnostics, null);
             }
 
-            var evaluator = new Evaluator(boundExpression, variables);
+            var statement = GetStatement();
+            var evaluator = new Evaluator(statement, variables);
             var value = evaluator.Evaluate();
 
             return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
@@ -62,7 +63,13 @@ namespace Minsk.CodeAnalysis
 
         public void EmitTree(TextWriter writer)
         {
-            GlobalScope.Statement.WriteTo(writer);
+            var statement = GetStatement();
+            statement.WriteTo(writer);
+        }
+
+        private BoundStatement GetStatement()
+        {
+            return Lowerer.Lower(GlobalScope.Statement);
         }
     }
 }
