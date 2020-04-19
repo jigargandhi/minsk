@@ -23,8 +23,11 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.GreaterToken:
                     return 3;
                 case SyntaxKind.AmpersandAmpersandToken:
+                case SyntaxKind.AmpersandToken:
                     return 2;
                 case SyntaxKind.PipePipeToken:
+                case SyntaxKind.PipeToken:
+                case SyntaxKind.HatToken:
                     return 1;
                 default:
                     return 0;
@@ -38,6 +41,7 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                 case SyntaxKind.BangToken:
+                case SyntaxKind.TildeToken:
                     return 6;
                 default:
                     return 0;
@@ -82,7 +86,11 @@ namespace Minsk.CodeAnalysis.Syntax
                 case SyntaxKind.OpenParenthesisToken: return "(";
                 case SyntaxKind.CloseParenthesisToken: return ")";
                 case SyntaxKind.AmpersandAmpersandToken: return "&&";
+                case SyntaxKind.AmpersandToken: return "&";
+                case SyntaxKind.TildeToken: return "~";
+                case SyntaxKind.HatToken: return "^";
                 case SyntaxKind.PipePipeToken: return "||";
+                case SyntaxKind.PipeToken: return "|";
                 case SyntaxKind.EqualsEqualsToken: return "==";
                 case SyntaxKind.EqualsToken: return "=";
                 case SyntaxKind.BangEqualsToken: return "!=";
