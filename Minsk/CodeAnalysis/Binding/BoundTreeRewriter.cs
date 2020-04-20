@@ -47,7 +47,7 @@ namespace Minsk.CodeAnalysis.Binding
 
         protected virtual BoundStatement RewriteBlockStatement(BoundBlockStatement node)
         {
-            ImmutableArray<BoundStatement>.Builder builder= null;
+            ImmutableArray<BoundStatement>.Builder builder = null;
 
             for (int i = 0; i < node.Statements.Length; i++)
             {
@@ -55,24 +55,24 @@ namespace Minsk.CodeAnalysis.Binding
                 var newStatement = RewriteStatement(oldStatement);
                 if (newStatement != oldStatement)
                 {
-                    if(builder == null)
+                    if (builder == null)
                     {
                         builder = ImmutableArray.CreateBuilder<BoundStatement>(node.Statements.Length);
-                        for (var j = 0; j < i;j++)
+                        for (var j = 0; j < i; j++)
                         {
                             builder.Add(node.Statements[j]);
                         }
                     }
-                    builder.Add(node.Statements[i]);
+
                 }
                 if (builder != null)
                 {
                     builder.Add(newStatement);
                 }
             }
-            if(builder == null)
+            if (builder == null)
                 return node;
-            
+
             return new BoundBlockStatement(builder.MoveToImmutable());
         }
 
@@ -135,7 +135,7 @@ namespace Minsk.CodeAnalysis.Binding
         protected virtual BoundExpression RewriteBinaryExpression(BoundBinaryExpression node)
         {
             var left = RewriteExpression(node.Left);
-            var right = RewriteExpression(node.Left);
+            var right = RewriteExpression(node.Right);
             if (left == node.Left && right == node.Right)
                 return node;
 
