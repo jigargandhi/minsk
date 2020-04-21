@@ -76,8 +76,7 @@ namespace Minsk
                                   previous.ContinueWith(syntaxTree);
 
 
-                var evaluationResult = compilation.Evaluate(variables);
-                var diagnostics = evaluationResult.Diagnostics;
+
                 var color = Console.ForegroundColor;
                 if (showTree)
                 {
@@ -90,7 +89,8 @@ namespace Minsk
                 {
                     compilation.EmitTree(Console.Out);
                 }
-
+                var evaluationResult = compilation.Evaluate(variables);
+                var diagnostics = evaluationResult.Diagnostics;
                 if (!diagnostics.Any())
                 {
                     Console.ForegroundColor = ConsoleColor.Magenta;

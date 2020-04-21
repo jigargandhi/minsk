@@ -15,7 +15,10 @@ namespace Minsk.CodeAnalysis.Binding
         VariableDeclaration,
         IfStatement,
         WhileStatement,
-        ForStatement
+        ForStatement,
+        GotoStatement,
+        LabelStatement,
+        ConditionalGotoStatement
     }
 
 }

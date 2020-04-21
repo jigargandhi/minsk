@@ -67,7 +67,7 @@ namespace Minsk.CodeAnalysis
             statement.WriteTo(writer);
         }
 
-        private BoundStatement GetStatement()
+        private BoundBlockStatement GetStatement()
         {
             return Lowerer.Lower(GlobalScope.Statement);
         }

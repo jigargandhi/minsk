@@ -6,12 +6,12 @@ namespace Minsk.CodeAnalysis
 {
     class Evaluator
     {
-        private readonly BoundStatement _root;
+        private readonly BoundBlockStatement _root;
         private readonly Dictionary<VariableSymbol, object> _variables;
 
         private object _lastValue = null;
 
-        public Evaluator(BoundStatement root, Dictionary<VariableSymbol, object> variables)
+        public Evaluator(BoundBlockStatement root, Dictionary<VariableSymbol, object> variables)
         {
             this._root = root;
             _variables = variables;
@@ -19,34 +19,56 @@ namespace Minsk.CodeAnalysis
 
         public object Evaluate()
         {
-            EvaluateStatement(_root);
+            var labelToIndexes = new Dictionary<LabelSymbol, int>();
+            for (var i = 0; i < _root.Statements.Length; i++)
+            {
+
+                if (_root.Statements[i] is BoundLabelStatement l)
+                    labelToIndexes.Add(l.Label, i + 1);
+            }
+
+            var index = 0;
+            while (index < _root.Statements.Length)
+            {
+                var s = _root.Statements[index];
+                switch (s.Kind)
+                {
+                    case BoundNodeKind.VariableDeclaration:
+                        EvaluateVariableDeclaration((BoundVariableDeclaration)s);
+                        index++;
+                        break;
+
+                    case BoundNodeKind.ExpressionStatement:
+                        EvaluateExpressionStatement((BoundExpressionStatement)s);
+                        index++;
+                        break;
+                    case BoundNodeKind.ConditionalGotoStatement:
+                        var conditionalGotoStatement = (BoundConditionalGotoStatement)s;
+                        var condition = (bool)EvaluateExpression(conditionalGotoStatement.Condition);
+                        if ((condition && !conditionalGotoStatement.JumpIfFalse)
+                        || (!condition && conditionalGotoStatement.JumpIfFalse))
+                        {
+                            index = labelToIndexes[conditionalGotoStatement.Label];
+                        }
+                        else
+                        {
+                            index++;
+                        }
+
+                        break;
+                    case BoundNodeKind.GotoStatement:
+                        index = labelToIndexes[((BoundGotoStatement)s).Label];
+                        break;
+                    case BoundNodeKind.LabelStatement:
+                        index++;
+                        break;
+
+                    default:
+                        throw new Exception($"Unexpected node {s.Kind}");
+                }
+            }
             return _lastValue;
         }
-        private void EvaluateStatement(BoundStatement node)
-        {
-            switch (node.Kind)
-            {
-                case BoundNodeKind.BlockStatement:
-                    EvaluateBlockStatement((BoundBlockStatement)node);
-                    break;
-                case BoundNodeKind.VariableDeclaration:
-                    EvaluateVariableDeclaration((BoundVariableDeclaration)node);
-                    break;
-                case BoundNodeKind.IfStatement:
-                    EvaluateIfStatement((BoundIfStatement)node);
-                    break; 
-                case BoundNodeKind.WhileStatement:
-                    EvaluateWhileStatement((BoundWhileStatement)node);
-                    break;
-                case BoundNodeKind.ExpressionStatement:
-                    EvaluateExpressionStatement((BoundExpressionStatement)node);
-                    break;
-                default:
-                    throw new Exception($"Unexpected node {node.Kind}");
-            }
-        }
-
-
 
         private void EvaluateExpressionStatement(BoundExpressionStatement node)
         {
@@ -57,33 +79,6 @@ namespace Minsk.CodeAnalysis
             var value = EvaluateExpression(node.Initializer);
             _variables[node.Variable] = value;
             _lastValue = value;
-        }
-        private void EvaluateIfStatement(BoundIfStatement node)
-        {
-            var condition = (bool)EvaluateExpression(node.Condition);
-            if (condition)
-            {
-                EvaluateStatement(node.ThenStatement);
-            }
-            else if (node.ElseStatement != null)
-            {
-                EvaluateStatement(node.ElseStatement);
-            }
-        }
-        private void EvaluateBlockStatement(BoundBlockStatement node)
-        {
-            foreach (var statement in node.Statements)
-            {
-                EvaluateStatement(statement);
-            }
-        }
-
-        private void EvaluateWhileStatement(BoundWhileStatement node)
-        {
-            while ((bool)EvaluateExpression(node.Condition))
-            {
-                EvaluateStatement(node.Body);
-            }
         }
 
         private object EvaluateExpression(BoundExpression node)
