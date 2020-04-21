@@ -86,7 +86,7 @@ namespace Minsk.CodeAnalysis.Syntax
 
             foreach (var child in node.GetChildren())
             {
-                PrettyPrint(writer, child, indent, node == last);
+                PrettyPrint(writer, child, indent, child == last);
             }
         }
 

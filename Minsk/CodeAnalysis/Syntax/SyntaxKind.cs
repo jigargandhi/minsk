@@ -49,6 +49,10 @@ namespace Minsk.CodeAnalysis.Syntax
         WhileStatement,
         ForKeyword,
         ForStatement,
-        ToKeyword
+        ToKeyword,
+        TildeToken,
+        AmpersandToken,
+        PipeToken,
+        HatToken
     }
 }

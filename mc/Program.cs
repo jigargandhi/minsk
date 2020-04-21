@@ -12,9 +12,12 @@ namespace Minsk
 {
     internal static class Program
     {
+
         private static void Main()
         {
             bool showTree = false;
+            bool showProgram = false;
+
             var variables = new Dictionary<VariableSymbol, object>();
             var textBuilder = new StringBuilder();
             Compilation previous = null;
@@ -37,10 +40,16 @@ namespace Minsk
                 if (textBuilder.Length == 0)
                 {
                     if (isBlank) break;
-                    if (input == "#showtree")
+                    if (input == "#showTree")
                     {
                         showTree = !showTree;
-                        Console.WriteLine(showTree ? "Showing parse trees" : "Not showing parse trees");
+                        Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees.");
+                        continue;
+                    }
+                    if (input == "#showProgram")
+                    {
+                        showProgram = !showProgram;
+                        Console.WriteLine(showProgram ? "Showing bound tree." : "Not showing bound tree.");
                         continue;
                     }
                     else if (input == "#cls")
@@ -67,8 +76,7 @@ namespace Minsk
                                   previous.ContinueWith(syntaxTree);
 
 
-                var evaluationResult = compilation.Evaluate(variables);
-                var diagnostics = evaluationResult.Diagnostics;
+
                 var color = Console.ForegroundColor;
                 if (showTree)
                 {
@@ -76,6 +84,13 @@ namespace Minsk
                     syntaxTree.Root.WriteTo(Console.Out);
                     Console.ForegroundColor = color;
                 }
+
+                if (showProgram)
+                {
+                    compilation.EmitTree(Console.Out);
+                }
+                var evaluationResult = compilation.Evaluate(variables);
+                var diagnostics = evaluationResult.Diagnostics;
                 if (!diagnostics.Any())
                 {
                     Console.ForegroundColor = ConsoleColor.Magenta;

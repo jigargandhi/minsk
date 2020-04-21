@@ -15,7 +15,10 @@ namespace Minsk.CodeAnalysis.Binding
         Less,
         Greater,
         LessOrEquals,
-        GreaterOrEquals
+        GreaterOrEquals,
+        BitwiseAnd,
+        BitwiseOr,
+        BitwiseXor
     }
 
 }

@@ -4,8 +4,7 @@ namespace Minsk.CodeAnalysis
 {
     public sealed class VariableSymbol
     {
-
-        public VariableSymbol(string name,bool isReadOnly,  Type type)
+        public VariableSymbol(string name, bool isReadOnly, Type type)
         {
             Name = name;
             IsReadOnly = isReadOnly;
