@@ -52,11 +52,15 @@ namespace Minsk.CodeAnalysis.Lowering
         {
             if (node.ElseStatement == null)
             {
+                // gotoTrue <condition> endLabel
+                // <thenstatement>
+                // endLabel:
+                // 
                 var endLabel = GenerateLabel();
-                var gotoFalse = new BoundConditionalGotoStatement(endLabel, node.Condition, true);
+                var gotoTrue = new BoundConditionalGotoStatement(endLabel, node.Condition, false);
                 var endLabelStatement = new BoundLabelStatement(endLabel);
                 var result = new BoundBlockStatement(ImmutableArray.Create<BoundStatement>(
-                    gotoFalse, 
+                    gotoTrue, 
                     node.ThenStatement, 
                     endLabelStatement));
                 return RewriteStatement(result);
@@ -67,7 +71,7 @@ namespace Minsk.CodeAnalysis.Lowering
                 var elseLabel = GenerateLabel();
                 var endLabelStatement = new BoundLabelStatement(endLabel);
                 var elseLabelStatement = new BoundLabelStatement(elseLabel);
-                var gotoFalse = new BoundConditionalGotoStatement(elseLabel, node.Condition, true);
+                var gotoFalse = new BoundConditionalGotoStatement(elseLabel, node.Condition, false);
                 var gotoEndStatement = new BoundGotoStatement(endLabel);
                 var result = new BoundBlockStatement(
                     ImmutableArray.Create<BoundStatement>(

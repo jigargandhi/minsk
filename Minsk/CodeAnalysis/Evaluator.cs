@@ -45,8 +45,7 @@ namespace Minsk.CodeAnalysis
                     case BoundNodeKind.ConditionalGotoStatement:
                         var conditionalGotoStatement = (BoundConditionalGotoStatement)s;
                         var condition = (bool)EvaluateExpression(conditionalGotoStatement.Condition);
-                        if ((condition && !conditionalGotoStatement.JumpIfFalse)
-                        || (!condition && conditionalGotoStatement.JumpIfFalse))
+                        if (condition == conditionalGotoStatement.JumpIfTrue)
                         {
                             index = labelToIndexes[conditionalGotoStatement.Label];
                         }
